@@ -3,7 +3,7 @@ name: Python CI
 on:
   push:
     branches:
-      - main
+      - main  # A branch 'main' é a que acionará o workflow
   pull_request:
     branches:
       - main
@@ -21,24 +21,25 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'  # Altere conforme sua versão do Python
+          python-version: '3.9'  # Altere para a versão do Python que você está usando
 
       # Passo 3: Instalar dependências
       - name: Install dependencies
         run: |
-          python -m venv venv
+          python -m venv venv  # Cria o ambiente virtual
           . venv/bin/activate  # Ativa o ambiente virtual
-          pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install --upgrade pip  # Atualiza o pip
+          pip install -r requirements.txt  # Instala as dependências listadas no requirements.txt
 
-      # Passo 4: Verificação de Build (Depuração)
-      - name: Print Python version
+      # Passo 4: Verificar a instalação das dependências
+      - name: Verify installed packages
         run: |
-          python --version  # Verifica a versão do Python
-          pip show pytest   # Verifica se o pytest foi instalado corretamente
+          . venv/bin/activate  # Ativa o ambiente virtual
+          pip show flask  # Verifica se o Flask está instalado corretamente
+          pip show click  # Verifica se o Click está instalado corretamente
 
       # Passo 5: Executar os testes
       - name: Run tests
         run: |
           . venv/bin/activate  # Ativa o ambiente virtual
-          pytest tests/
+          pytest tests/  # Roda os testes da pasta 'tests'
