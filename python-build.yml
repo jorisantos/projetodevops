@@ -3,10 +3,10 @@ name: Python CI
 on:
   push:
     branches:
-      - main  # A branch 'main' é a que acionará o workflow
+      - main  # Aciona o workflow ao realizar push na branch 'main'
   pull_request:
     branches:
-      - main
+      - main  # Aciona o workflow em pull requests para a branch 'main'
 
 jobs:
   build:
@@ -21,9 +21,18 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'  # Altere para a versão do Python que você está usando
+          python-version: '3.9'  # Substitua pela versão do Python desejada
 
-      # Passo 3: Instalar dependências
+      # Passo 3: Configurar cache para pip
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # Passo 4: Instalar dependências
       - name: Install dependencies
         run: |
           python -m venv venv  # Cria o ambiente virtual
@@ -31,15 +40,22 @@ jobs:
           pip install --upgrade pip  # Atualiza o pip
           pip install -r requirements.txt  # Instala as dependências listadas no requirements.txt
 
-      # Passo 4: Verificar a instalação das dependências
+      # Passo 5: Verificar as dependências instaladas
       - name: Verify installed packages
         run: |
           . venv/bin/activate  # Ativa o ambiente virtual
-          pip show flask  # Verifica se o Flask está instalado corretamente
-          pip show click  # Verifica se o Click está instalado corretamente
+          pip list  # Lista os pacotes instalados para verificação
 
-      # Passo 5: Executar os testes
+      # Passo 6: Executar os testes
       - name: Run tests
         run: |
           . venv/bin/activate  # Ativa o ambiente virtual
-          pytest projetodevops/tests/  # Executa os testes na pasta especificada
+          pytest projetodevops/tests/ --maxfail=5 --disable-warnings  # Executa os testes e exibe um número limitado de falhas
+
+      # Passo 7: Salvar resultados de teste como artefatos (opcional)
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-reports
+          path: tests/reports/  # Substitua pelo caminho onde os relatórios de teste são gerados
