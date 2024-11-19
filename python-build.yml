@@ -1,42 +1,44 @@
-name: Python Build
+name: Python CI
 
 on:
   push:
     branches:
-      - main  # ou a branch que você deseja monitorar para builds
+      - main
   pull_request:
     branches:
-      - main  # ou a branch que você deseja monitorar para pull requests
+      - main
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Define o sistema operacional para o ambiente de build
+    runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2  # Faz o checkout do código do repositório
+      # Passo 1: Fazer o checkout do código
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4  # Configura o Python no ambiente
-      with:
-        python-version: '3.9'  # Defina a versão do Python que você está usando
+      # Passo 2: Configurar a versão do Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'  # Altere conforme sua versão do Python
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt  # Instala as dependências do projeto
+      # Passo 3: Instalar dependências
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          . venv/bin/activate  # Ativa o ambiente virtual
+          pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Run tests
-      run: |
-        pytest  # Ou o comando de teste que você utiliza, se for outro
+      # Passo 4: Verificação de Build (Depuração)
+      - name: Print Python version
+        run: |
+          python --version  # Verifica a versão do Python
+          pip show pytest   # Verifica se o pytest foi instalado corretamente
 
-    - name: Build project (opcional)
-      run: |
-        # Se você tiver um comando para build, como `python setup.py install` ou algo similar
-        python setup.py install  # Ajuste conforme a necessidade do seu projeto
-
-    - name: Upload build artifacts (opcional)
-      uses: actions/upload-artifact@v3
-      with:
-        name: build-artifacts
-        path: path/to/your/build/output  # Ajuste o caminho para o que você gera ao buildar
+      # Passo 5: Executar os testes
+      - name: Run tests
+        run: |
+          . venv/bin/activate  # Ativa o ambiente virtual
+          pytest tests/
