@@ -42,4 +42,4 @@ jobs:
       - name: Run tests
         run: |
           . venv/bin/activate  # Ativa o ambiente virtual
-          pytest tests/  # Roda os testes da pasta 'tests'
+          pytest projetodevops/tests/  # Executa os testes na pasta especificada
