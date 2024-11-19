@@ -1,0 +1,16 @@
+# playbook.yml
+---
+  - name: Configurar servidores com timeout
+    hosts: servers
+    vars_files:
+      - vars.yml
+    tasks:
+      - name: Definir o timeout para o serviço
+        ansible.builtin.command:
+          cmd: "echo 'Configuração de timeout: {{ timeout }}'"
+        register: result
+  
+      - name: Exibir o resultado da configuração
+        ansible.builtin.debug:
+          msg: "Timeout configurado: {{ timeout }} segundos"
+        when: result is success
