@@ -17,13 +17,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Passo 2: Configurar a versão do Python
+      # Passo 2: Debug para verificar estrutura do diretório
+      - name: Debug file structure
+        run: ls -R
+
+      # Passo 3: Configurar a versão do Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9' # Altere conforme sua versão do Python
+          python-version: '3.9' # Altere conforme necessário
 
-      # Passo 3: Instalar dependências (se houver requirements.txt)
+      # Passo 4: Instalar dependências
       - name: Install dependencies
         run: |
           python -m venv venv
@@ -31,12 +35,12 @@ jobs:
           pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      # Passo 4: Executar o código para gerar saída
+      # Passo 5: Executar o script main.py
       - name: Run Python script
         run: |
           python main.py > output.txt
 
-      # Passo 5: Gerar e salvar artefato
+      # Passo 6: Gerar e salvar artefato
       - name: Generate artifact
         run: |
           mkdir -p artifact_output
