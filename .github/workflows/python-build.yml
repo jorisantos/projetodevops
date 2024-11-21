@@ -35,10 +35,10 @@ jobs:
           pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      # Passo 5: Executar o script main.py
+      # Passo 5: Executar o script main.py na pasta projeto
       - name: Run Python script
         run: |
-          python main.py > output.txt
+          python projeto/main.py > output.txt
 
       # Passo 6: Gerar e salvar artefato
       - name: Generate artifact
@@ -49,5 +49,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: meu-artefato # Nome do artefato no GitHub
-          path: artifact_output/ # Caminho para o artefato
+          name: meu-artefato
+          path: artifact_output/
