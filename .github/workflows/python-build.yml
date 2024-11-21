@@ -30,3 +30,15 @@ jobs:
           source venv/bin/activate
           pip install --upgrade pip
           pip install -r requirements.txt
+
+      # Passo 4: Gerar e salvar artefato
+      - name: Generate artifact
+        run: |
+          mkdir -p artifact_output
+          echo "Conteúdo do artefato" > artifact_output/resultado.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: meu-artefato # Nome do artefato no GitHub
+          path: artifact_output/ # Caminho para o artefato
