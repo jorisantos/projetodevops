@@ -23,19 +23,24 @@ jobs:
         with:
           python-version: '3.9' # Altere conforme sua versão do Python
 
-      # Passo 3: Instalar dependências
+      # Passo 3: Instalar dependências (se houver requirements.txt)
       - name: Install dependencies
         run: |
           python -m venv venv
           source venv/bin/activate
           pip install --upgrade pip
-          pip install -r requirements.txt
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      # Passo 4: Gerar e salvar artefato
+      # Passo 4: Executar o código para gerar saída
+      - name: Run Python script
+        run: |
+          python main.py > output.txt
+
+      # Passo 5: Gerar e salvar artefato
       - name: Generate artifact
         run: |
           mkdir -p artifact_output
-          echo "Conteúdo do artefato" > artifact_output/resultado.txt
+          mv output.txt artifact_output/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
